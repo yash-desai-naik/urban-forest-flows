@@ -357,9 +357,27 @@ async function handleNFMResponse(
                 messaging_product: 'whatsapp',
                 recipient_type: 'individual',
                 to: from,
-                type: 'text',
-                text: {
-                    body: `Here is your payment link: ${paymentLink.short_url}`
+                type: 'interactive',
+                interactive: {
+                    type: 'cta_url',
+                    body: {
+                        text: 'Click below to make payment'
+                    },
+                    action: {
+                        // buttons: [
+                        //     {
+                        //         type: 'url',
+                        //         url: paymentLink.short_url,
+                        //         title: 'Pay Now'
+                        //     }
+                        // ]
+                        "name": "cta_url",
+                        "parameters": {
+                            "display_text": "Pay Now",
+                            "url": paymentLink.short_url
+      
+                        }
+                    }
                 }
             };
 
