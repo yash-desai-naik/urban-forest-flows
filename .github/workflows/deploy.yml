@@ -1,0 +1,51 @@
+# .github/workflows/deploy.yml
+name: Deploy to EC2
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+          
+      - name: Install dependencies
+        run: npm ci
+        
+      - name: Build TypeScript
+        run: npm run build
+        
+      - name: Create .env file
+        run: |
+          echo "APP_SECRET=${{ secrets.APP_SECRET }}" >> .env
+          echo "PASSPHRASE=${{ secrets.PASSPHRASE }}" >> .env
+          echo "PRIVATE_KEY=${{ secrets.PRIVATE_KEY }}" >> .env
+          echo "PUBLIC_KEY=${{ secrets.PUBLIC_KEY }}" >> .env
+          echo "PORT=${{ secrets.PORT }}" >> .env
+          echo "PUBLIC_BASE_URL=${{ secrets.PUBLIC_BASE_URL }}" >> .env
+          echo "WHATSAPP_VERIFY_TOKEN=${{ secrets.WHATSAPP_VERIFY_TOKEN }}" >> .env
+          echo "WHATSAPP_API_TOKEN=${{ secrets.WHATSAPP_API_TOKEN }}" >> .env
+          echo "WHATSAPP_PHONE_NUMBER_ID=${{ secrets.WHATSAPP_PHONE_NUMBER_ID }}" >> .env
+          echo "RAZORPAY_KEY_ID=${{ secrets.RAZORPAY_KEY_ID }}" >> .env
+          echo "RAZORPAY_KEY_SECRET=${{ secrets.RAZORPAY_KEY_SECRET }}" >> .env
+          echo "RAZORPAY_WEBHOOK_SECRET=${{ secrets.RAZORPAY_WEBHOOK_SECRET }}" >> .env
+
+      - name: Deploy to EC2
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USERNAME }}
+          key: ${{ secrets.EC2_SSH_KEY }}
+          script: |
+            cd ~/urban-forest-flows
+            git pull origin main
+            npm ci
+            npm run build
+            pm2 restart urban-forest-api
