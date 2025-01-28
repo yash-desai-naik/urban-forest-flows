@@ -150,7 +150,7 @@ async function processTextMessage(from: string, text: string): Promise<void> {
             to: from,
             type: 'template',
             template: {
-                name: 'urban_forest_registration_final',
+                name: 'cyberia__team_registration',
                 language: {
                     code: 'en_US'
                 },
@@ -301,7 +301,7 @@ async function handleNFMResponse(
 
     const userData: OnboardRequest = {
         number: from,
-        channel: 'urban_forest_registration',
+        channel: 'cyberia__team_registration',
         onBoardThrough: 'whatsapp',
     };
 
