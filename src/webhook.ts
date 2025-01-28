@@ -326,7 +326,7 @@ async function handleNFMResponse(
             // @ts-ignore
             const passAmt:number = passAmounts[optionalParams?.passType]
             const paymentLink = await razorpay.paymentLink.create({
-                // upi_link: true,
+                upi_link: true,
                 amount: passAmt*100 , // Amount in paise (optionalParams.amount in currency units)
                 currency: 'INR',
                 accept_partial: false,
